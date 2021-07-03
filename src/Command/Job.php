@@ -134,16 +134,13 @@ class Job extends Command
             $bought_users[] = $bought->userid;
             if ($bought->valid() && $bought->used_days() % $shop->reset() == 0 && $bought->used_days() != 0) {
                 echo ('流量重置-' . $user->id . "\n");
-                $user->transfer_enable = Tools::toGB($shop->reset_value());
-                $user->u = 0;
-                $user->d = 0;
-                $user->last_day_t = 0;
+                $user->transfer_enable += Tools::toGB($shop->reset_value());
                 $user->save();
                 $user->sendMail(
-                    $_ENV['appName'] . '-您的流量被重置了',
+                    $_ENV['appName'] . ' - 您的流量已添加',
                     'news/warn.tpl',
                     [
-                        'text' => '您好，根据您所订购的订单 ID:' . $bought->id . '，流量已经被重置为' . $shop->reset_value() . 'GB'
+                        'text' => '您好，根据您所订购的订单 ID:' . $bought->id . '，流量已经添加' . $shop->reset_value() . 'GB'
                     ],
                     [],
                     $_ENV['email_queue']
@@ -161,16 +158,13 @@ class Job extends Command
                     continue;
                 }
                 if (date('d') == $user->auto_reset_day) {
-                    $user->u = 0;
-                    $user->d = 0;
-                    $user->last_day_t = 0;
-                    $user->transfer_enable = $user->auto_reset_bandwidth * 1024 * 1024 * 1024;
+                    $user->transfer_enable += $user->auto_reset_bandwidth * 1024 * 1024 * 1024;
                     $user->save();
                     $user->sendMail(
-                        $_ENV['appName'] . '-您的流量被重置了',
+                        $_ENV['appName'] . ' - 您的流量已添加',
                         'news/warn.tpl',
                         [
-                            'text' => '您好，根据管理员的设置，流量已经被重置为' . $user->auto_reset_bandwidth . 'GB'
+                            'text' => '您好，根据管理员的设置，流量已经添加' . $user->auto_reset_bandwidth . 'GB'
                         ],
                         [],
                         $_ENV['email_queue']
@@ -321,10 +315,6 @@ class Job extends Command
         $users = User::all();
         foreach ($users as $user) {
             if (strtotime($user->expire_in) < time() && $user->expire_notified == false) {
-                $user->transfer_enable = 0;
-                $user->u = 0;
-                $user->d = 0;
-                $user->last_day_t = 0;
                 $user->sendMail(
                     $_ENV['appName'] . '-您的用户账户已经过期了',
                     'news/warn.tpl',

@@ -141,44 +141,15 @@ class Shop extends Model
         foreach ($this->content as $key => $value) {
             switch ($key) {
                 case 'bandwidth':
-                    if ($is_renew == 0) {
-                        if ($_ENV['enable_bought_reset'] == true) {
-                            $user->transfer_enable = $value * 1024 * 1024 * 1024;
-                            $user->u = 0;
-                            $user->d = 0;
-                            $user->last_day_t = 0;
-                        } else {
-                            $user->transfer_enable += $value * 1024 * 1024 * 1024;
-                        }
-                    } elseif ($this->auto_reset_bandwidth == 1) {
-                        $user->transfer_enable = $value * 1024 * 1024 * 1024;
-                        $user->u = 0;
-                        $user->d = 0;
-                        $user->last_day_t = 0;
-                    } else {
-                        $user->transfer_enable += $value * 1024 * 1024 * 1024;
-                    }
+                    $user->transfer_enable += $value * 1024 * 1024 * 1024;
                     break;
                 case 'expire':
-                    if (time() > strtotime($user->expire_in)) {
-                        $user->expire_in = date('Y-m-d H:i:s', time() + $value * 86400);
-                    } else {
-                        $user->expire_in = date('Y-m-d H:i:s', strtotime($user->expire_in) + $value * 86400);
-                    }
+                    $user->expire_in = '2077-01-01 01:01:01';
                     break;
                 case 'class':
-                    if ($_ENV['enable_bought_extend'] == true) {
-                        if ($user->class == $value) {
-                            $user->class_expire = date('Y-m-d H:i:s', strtotime($user->class_expire) + $this->content['class_expire'] * 86400);
-                        } else {
-                            $user->class_expire = date('Y-m-d H:i:s', time() + $this->content['class_expire'] * 86400);
-                        }
-                        $user->class = $value;
-                    } else {
-                        $user->class = $value;
-                        $user->class_expire = date('Y-m-d H:i:s', time() + $this->content['class_expire'] * 86400);
-                        break;
-                    }
+                    $user->class = 888;
+                    $user->class_expire = date('Y-m-d H:i:s', time() + $this->content['class_expire'] * 86400);
+                    break;
                 case 'speedlimit':
                     $user->node_speedlimit = $value;
                     break;

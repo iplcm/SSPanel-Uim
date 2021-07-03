@@ -928,9 +928,12 @@ class User extends Model
                 $text .= '已用流量：' . $this->usedTraffic() . PHP_EOL;
                 $text .= '剩余流量：' . $this->unusedTraffic() . PHP_EOL;
                 $text .= '今日使用：' . $lastday . 'MB';
-                $this->sendTelegram(
-                    $text
-                );
+                try {
+                    $this->sendTelegram($text);
+                } catch (Exception $e) {
+                    $this->sendDailyMail = 1;
+                    $this->sendDailyNotification($ann);
+                }
                 break;
         }
     }
