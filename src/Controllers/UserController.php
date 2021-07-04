@@ -438,10 +438,10 @@ class UserController extends BaseController
 
         return $response->write(
             $this->view()
-                ->assign('boughts'    , $boughts)
-                ->assign('userip'     , $userip)
+                ->assign('boughts', $boughts)
+                ->assign('userip', $userip)
                 ->assign('userloginip', $userloginip)
-                ->assign('paybacks'   , $paybacks)
+                ->assign('paybacks', $paybacks)
                 ->display('user/profile.tpl')
         );
     }
@@ -938,17 +938,6 @@ class UserController extends BaseController
         $autorenew = $request->getParam('autorenew');
 
         $shop = Shop::where('id', $shop)->where('status', 1)->first();
-
-        $orders = Bought::where('userid', $this->user->id)->get();
-        foreach ($orders as $order) {
-            if ($order->shop()->use_loop()) {
-                if ($order->valid()) {
-                    $res['ret'] = 0;
-                    $res['msg'] = '您购买的含有自动重置系统的套餐还未过期，无法购买新套餐';
-                    return $response->withJson($res);
-                }
-            }
-        };
 
         if ($shop == null) {
             $res['ret'] = 0;
