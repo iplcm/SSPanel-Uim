@@ -258,52 +258,6 @@
                     <div class="card-main">
                         <div class="card-inner">
                             <div class="card-inner">
-                                <div class="cardbtn-edit">
-                                    <div class="card-heading">联络方式修改</div>
-                                    <button class="btn btn-flat" id="wechat-update"><span class="icon">check</span>&nbsp;
-                                    </button>
-                                </div>
-                                <p>当前联络方式：
-                                    <code id="ajax-im" data-default="imtype">
-                                        {if $user->im_type==1}微信{/if}
-                                        {if $user->im_type==2}QQ{/if}
-                                        {if $user->im_type==3}Google+{/if}
-                                        {if $user->im_type==4}Telegram{/if}
-                                        {if $user->im_type==5}Discord{/if}
-                                    </code>
-                                </p>
-                                <p>当前联络方式账号：
-                                    <code>{$user->im_value}</code>
-                                </p>
-                                <div class="form-group form-group-label control-highlight-custom dropdown">
-                                    <label class="floating-label" for="imtype">选择您的联络方式</label>
-                                    <button class="form-control maxwidth-edit" id="imtype" data-toggle="dropdown"
-                                            value="{$user->im_type}"></button>
-                                    <ul class="dropdown-menu" aria-labelledby="imtype">
-                                        <li><a href="#" class="dropdown-option" onclick="return false;" val="1"
-                                               data="imtype">微信</a></li>
-                                        <li><a href="#" class="dropdown-option" onclick="return false;" val="2"
-                                               data="imtype">QQ</a></li>
-                                        <li><a href="#" class="dropdown-option" onclick="return false;" val="3"
-                                               data="imtype">Facebook</a></li>
-                                        <li><a href="#" class="dropdown-option" onclick="return false;" val="4"
-                                               data="imtype">Telegram</a></li>
-                                        <li><a href="#" class="dropdown-option" onclick="return false;" val="5"
-                                               data="imtype">Discord</a></li>
-                                    </ul>
-                                </div>
-                                <div class="form-group form-group-label">
-                                    <label class="floating-label" for="wechat">在这输入联络方式账号</label>
-                                    <input class="form-control maxwidth-edit" id="wechat" type="text">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="card margin-bottom-no">
-                    <div class="card-main">
-                        <div class="card-inner">
-                            <div class="card-inner">
                                 <p class="card-heading">两步验证</p>
                                 <p>请使用 TOTP 两步验证器扫描下面的二维码。</p>
                                 <p><i class="icon icon-lg" aria-hidden="true">android</i><a
@@ -426,33 +380,6 @@
                         </div>
                     </div>
                 {/if}
-                <div class="card margin-bottom-no">
-                    <div class="card-main">
-                        <div class="card-inner">
-                            <div class="card-inner">
-                                <div class="cardbtn-edit">
-                                    <div class="card-heading">主题修改</div>
-                                    <button class="btn btn-flat" id="theme-update"><span class="icon">check</span>&nbsp;
-                                    </button>
-                                </div>
-                                <p>当前主题：<code data-default="theme">{$user->theme}</code></p>
-                                <div class="form-group form-group-label control-highlight-custom dropdown">
-                                    <label class="floating-label" for="theme">主题</label>
-                                    <button id="theme" type="button" class="form-control maxwidth-edit" data-toggle="dropdown" value="{$user->theme}">
-                                    </button>
-                                    <ul class="dropdown-menu" aria-labelledby="mail">
-                                        {foreach $themes as $theme}
-                                            <li>
-                                                <a href="#" class="dropdown-option" onclick="return false;"
-                                                   val="{$theme}" data="theme">{$theme}</a>
-                                            </li>
-                                        {/foreach}
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </div>
                 {include file='dialog.tpl'}
         </section>
@@ -721,35 +648,6 @@
 {literal}
 <script>
     $(document).ready(function () {
-        $("#wechat-update").click(function () {
-            $.ajax({
-                type: "POST",
-                url: "wechat",
-                dataType: "json",
-                data: {
-                    wechat: $$getValue('wechat'),
-                    imtype: $$getValue('imtype')
-                },
-                success: (data) => {
-                    if (data.ret) {
-                        $("#result").modal();
-                        $$.getElementById('ajax-im').innerHTML = `${$("#imtype").find("option:selected").text()} ${$$getValue('wechat')}`
-                        $$.getElementById('msg').innerHTML = data.msg;
-                    } else {
-                        $("#result").modal();
-                        $$.getElementById('msg').innerHTML = data.msg;
-                    }
-                },
-                error: (jqXHR) => {
-                    $("#result").modal();
-                    $$.getElementById('msg').innerHTML = `${data.msg} 出现了一些错误`;
-                }
-            })
-        })
-    })
-</script>
-<script>
-    $(document).ready(function () {
         $("#ssr-update").click(function () {
             $.ajax({
                 type: "POST",
@@ -910,37 +808,7 @@
         })
     })
 </script>
-<script>
-    $(document).ready(function () {
-        $("#theme-update").click(function () {
-            $.ajax({
-                type: "POST",
-                url: "theme",
-                dataType: "json",
-                data: {
-                    theme: $$getValue('theme')
-                },
-                success: (data) => {
-                    if (data.ret) {
-                        $("#result").modal();
-                        $$.getElementById('msg').innerHTML = data.msg;
-                        window.setTimeout("location.href='/user/edit'", {$config['jump_delay']});
-                    } else {
-                        $("#result").modal();
-                        $$.getElementById('msg').innerHTML = data.msg;
-                    }
-                },
 {literal}
-                error: (jqXHR) => {
-                    $("#result").modal();
-                    $$.getElementById('msg').innerHTML = `${
-                            data.msg
-                            } 出现了一些错误`;
-                }
-            })
-        })
-    })
-</script>
 <script>
     $(document).ready(function () {
         $("#method-update").click(function () {
