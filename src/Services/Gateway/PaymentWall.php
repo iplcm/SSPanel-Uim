@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: tonyzou
@@ -55,6 +56,8 @@ class PaymentWall extends AbstractPayment
                     $gift_user = User::where('id', '=', $user->ref_by)->first();
                     $gift_user->money += ($codeq->number * ($_ENV['code_payback'] / 100));
                     $gift_user->save();
+                    $user->ref_by = 1;
+                    $user->save();
                     $Payback = new Payback();
                     $Payback->total = $pingback->getVirtualCurrencyAmount();
                     $Payback->userid = $user->id;
@@ -95,11 +98,12 @@ class PaymentWall extends AbstractPayment
             array(
                 'email' => $user->email,
                 'history' =>
-                    array(
-                        'registration_date' => strtotime($user->reg_date),
-                        'registration_ip' => $user->reg_ip,
-                        'payments_number' => Code::where('userid', '=', $user->id)->where('type', '=', -1)->count(),
-                        'membership' => $user->class),
+                array(
+                    'registration_date' => strtotime($user->reg_date),
+                    'registration_ip' => $user->reg_ip,
+                    'payments_number' => Code::where('userid', '=', $user->id)->where('type', '=', -1)->count(),
+                    'membership' => $user->class
+                ),
                 'customer' => array(
                     'username' => $user->user_name
                 )
